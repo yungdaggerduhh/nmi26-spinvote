@@ -210,24 +210,40 @@ function drawWheel() {
     ctx.rotate(startAngle + arc / 2);
     ctx.textAlign = "right";
     ctx.fillStyle = "#111";
-    const fontSize = Math.max(10, Math.min(14, 180 / numSegments));
+    const fontSize = Math.max(11, Math.min(16, 200 / numSegments));
     ctx.font = `bold ${fontSize}px sans-serif`;
     let text = list[i];
-    if (text.length > 28) text = text.substring(0, 25) + "…";
-    ctx.fillText(text, radius - 18, 4);
+    if (text.length > 26) text = text.substring(0, 23) + "…";
+    ctx.fillText(text, radius - 22, 5);
     ctx.restore();
   }
 
   // Center circle
   ctx.beginPath();
-  ctx.arc(0, 0, 32, 0, 2 * Math.PI);
+  ctx.arc(0, 0, 36, 0, 2 * Math.PI);
   ctx.fillStyle = "#fff";
   ctx.fill();
   ctx.strokeStyle = "#222";
-  ctx.lineWidth = 4;
+  ctx.lineWidth = 5;
   ctx.stroke();
 
   ctx.restore();
+}
+
+// Accurate winner detection: which segment is under the top pointer
+function getWinnerIndex(rotation, numSegments) {
+  const arc = (2 * Math.PI) / numSegments;
+  // Normalize rotation to [0, 2π)
+  let r = ((rotation % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
+
+  // Original angle that is currently under the pointer (top = -π/2)
+  // Because positive rotate is clockwise
+  let originalAngle = (-Math.PI / 2 - r + 4 * Math.PI) % (2 * Math.PI);
+
+  // Segment i starts at i*arc - π/2
+  let relative = (originalAngle - (-Math.PI / 2) + 2 * Math.PI) % (2 * Math.PI);
+  let index = Math.floor(relative / arc) % numSegments;
+  return index;
 }
 
 function spin() {
@@ -261,14 +277,9 @@ function spin() {
       isSpinning = false;
       spinBtn.disabled = false;
 
-      // Calculate winner: pointer is at top (angle -PI/2 or 3PI/2)
-      const normalized = ((currentRotation % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
-      const arc = (2 * Math.PI) / numSegments;
-      // The segment under the pointer (top)
-      let index = Math.floor((Math.PI / 2 - normalized + 2 * Math.PI) / arc) % numSegments;
-      index = (index + numSegments) % numSegments;
-
+      const index = getWinnerIndex(currentRotation, numSegments);
       const winner = list[index];
+
       resultDiv.style.display = 'block';
       resultDiv.innerHTML = `🎉 The wheel landed on:<br><strong>${winner}</strong>`;
     }
