@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CNMI 2026 Election Spin the Wheel - Kagman</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: linear-gradient(135deg, #0f1c4d, #8b1a1a, #e6a800);
+    color: white;
+    text-align: center;
+    margin: 0;
+    padding: 15px;
+    min-height: 100vh;
+  }
+  h1 { 
+    text-shadow: 2px 2px 6px rgba(0,0,0,0.6); 
+    margin: 10px 0 5px; 
+    font-size: clamp(1.6rem, 5vw, 2.4rem);
+  }
+  .subtitle { font-size: 1.05em; margin-bottom: 15px; opacity: 0.95; }
+  .controls { margin: 15px 0; }
+  select, button {
+    padding: 12px 18px;
+    font-size: 16px;
+    margin: 6px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+  select { background: white; color: #222; min-width: 220px; }
+  button {
+    background: #ff4757;
+    color: white;
+    font-weight: bold;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    transition: all 0.2s;
+  }
+  button:hover { background: #ee5a52; transform: translateY(-1px); }
+  button:disabled { background: #888; cursor: not-allowed; transform: none; }
+  #wheel-container {
+    position: relative;
+    width: min(420px, 92vw);
+    height: min(420px, 92vw);
+    margin: 20px auto;
+  }
+  canvas {
+    border-radius: 50%;
+    box-shadow: 0 0 40px rgba(0,0,0,0.6);
+    width: 100%;
+    height: 100%;
+  }
+  #pointer {
+    position: absolute;
+    top: -18px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 18px solid transparent;
+    border-right: 18px solid transparent;
+    border-top: 36px solid #ffdd00;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+    z-index: 10;
+  }
+  #result {
+    font-size: 1.35em;
+    font-weight: bold;
+    margin-top: 18px;
+    min-height: 70px;
+    padding: 16px;
+    background: rgba(0,0,0,0.45);
+    border-radius: 12px;
+    display: none;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .legend { 
+    margin-top: 18px; 
+    font-size: 0.85em; 
+    opacity: 0.85; 
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .source { font-size: 0.75em; opacity: 0.7; margin-top: 8px; }
+</style>
+</head>
+<body>
+  <h1>🗳️ CNMI 2026 Election Spin the Wheel</h1>
+  <div class="subtitle">For Kagman residents — November 3, 2026 General Election</div>
+  <div class="controls">
+    <select id="category">
+      <option value="all">All Candidates (random)</option>
+      <option value="governor">Governor / Lt. Governor Tickets</option>
+      <option value="delegate">Delegate to U.S. House</option>
+      <option value="ag">Attorney General</option>
+      <option value="senate">Senate (Saipan – 3rd District)</option>
+      <option value="house">House District 5 (Kagman)</option>
+      <option value="mayor">Saipan Mayor</option>
+      <option value="council">Saipan Municipal Council</option>
+      <option value="boe">Board of Education (Saipan)</option>
+    </select>
+    <button id="spinBtn">SPIN!</button>
+  </div>
+  <div id="wheel-container">
+    <div id="pointer"></div>
+    <canvas id="wheel" width="500" height="500"></canvas>
+  </div>
+  <div id="result"></div>
+  <div class="legend">
+    Based on official CEC certified candidates (votecnmi.gov.mp).<br>
+    Spin for fun — not official advice or endorsement!
+  </div>
+  <div class="source">Source: Commonwealth Election Commission 2026 Certified Candidates List</div>
+
+<script>
+const candidates = {
+  governor: [
+    "BJ Attao & Edmund Villagomez (IND)",
+    "Ralph Torres & Benjamin Jones Jr. (REP)",
+    "Lawrence Camacho & Edith Deleon Guerrero (IND)"
+  ],
+  delegate: [
+    "Galvin Sablan Deleon Guerrero (IND)",
+    "Kimberlyn Kay King-Hinds (REP)"
+  ],
+  ag: [
+    "Joaquin Deleon Guerrero Torres",
+    "Jonathan Robert Glass",
+    "Michael Norita Evangelista"
+  ],
+  senate: [
+    "Celina Roberto Babauta (DEM)",
+    "Corina Lorraine Magofna (IND)",
+    "Vicente Castro Camacho (IND)",
+    "Marco Taisakan Peter (REP)",
+    "Vinnie Vinson Flores Sablan (REP)",
+    "Crispin Manglona Sablan (IND)",
+    "Edwin Raymond Borja Quitugua (IND)"
+  ],
+  house: [
+    "Ted Anthony Deleon Guerrero (REP)",
+    "Angelo Atalig Camacho (IND)",
+    "Peter Francis Reyes Muna (DEM)",
+    "Leila Haveia Fleming Clark Staffler (DEM)"
+  ],
+  mayor: [
+    "Ramon “RB” Camacho (IND)",
+    "Joseph Muna Mendiola (IND)"
+  ],
+  council: [
+    "Anthony Tenorio Benavente",
+    "Antonia Manibusan Tudela",
+    "Marian Deleon Guerrero Tudela"
+  ],
+  boe: ["Daniel Ogo Quitugua"]
+};
+candidates.all = [
+  ...candidates.governor, ...candidates.delegate, ...candidates.ag,
+  ...candidates.senate, ...candidates.house, ...candidates.mayor,
+  ...candidates.council, ...candidates.boe
+];
+
+const canvas = document.getElementById('wheel');
+const ctx = canvas.getContext('2d');
+const spinBtn = document.getElementById('spinBtn');
+const categorySelect = document.getElementById('category');
+const resultDiv = document.getElementById('result');
+
+let currentRotation = 0;
+let isSpinning = false;
+
+const colors = [
+  '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7',
+  '#DDA0DD', '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E9',
+  '#F1948A', '#82E0AA', '#F8C471', '#AED6F1', '#D7BDE2',
+  '#F5B7B1', '#A9DFBF', '#FAD7A0', '#D4E6F1', '#E8DAEF'
+];
+
+function getCurrentList() {
+  return candidates[categorySelect.value] || candidates.all;
+}
+
+function drawWheel() {
+  const list = getCurrentList();
+  const numSegments = list.length;
+  const arc = (2 * Math.PI) / numSegments;
+  const radius = canvas.width / 2;
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.save();
+  ctx.translate(radius, radius);
+  ctx.rotate(currentRotation);
+
+  for (let i = 0; i < numSegments; i++) {
+    const startAngle = i * arc - Math.PI / 2;
+    ctx.beginPath();
+    ctx.fillStyle = colors[i % colors.length];
+    ctx.moveTo(0, 0);
+    ctx.arc(0, 0, radius - 4, startAngle, startAngle + arc);
+    ctx.closePath();
+    ctx.fill();
+
+    // Text
+    ctx.save();
+    ctx.rotate(startAngle + arc / 2);
+    ctx.textAlign = "right";
+    ctx.fillStyle = "#111";
+    const fontSize = Math.max(10, Math.min(14, 180 / numSegments));
+    ctx.font = `bold ${fontSize}px sans-serif`;
+    let text = list[i];
+    if (text.length > 28) text = text.substring(0, 25) + "…";
+    ctx.fillText(text, radius - 18, 4);
+    ctx.restore();
+  }
+
+  // Center circle
+  ctx.beginPath();
+  ctx.arc(0, 0, 32, 0, 2 * Math.PI);
+  ctx.fillStyle = "#fff";
+  ctx.fill();
+  ctx.strokeStyle = "#222";
+  ctx.lineWidth = 4;
+  ctx.stroke();
+
+  ctx.restore();
+}
+
+function spin() {
+  if (isSpinning) return;
+  isSpinning = true;
+  spinBtn.disabled = true;
+  resultDiv.style.display = 'none';
+
+  const list = getCurrentList();
+  const numSegments = list.length;
+  const spins = 6 + Math.random() * 4;
+  const extra = Math.random() * 2 * Math.PI;
+  const targetRotation = currentRotation + spins * 2 * Math.PI + extra;
+
+  const duration = 4500;
+  const start = performance.now();
+  const startRot = currentRotation;
+
+  function animate(now) {
+    const elapsed = now - start;
+    const progress = Math.min(elapsed / duration, 1);
+    const ease = 1 - Math.pow(1 - progress, 3);
+    currentRotation = startRot + (targetRotation - startRot) * ease;
+    drawWheel();
+
+    if (progress < 1) {
+      requestAnimationFrame(animate);
+    } else {
+      currentRotation = targetRotation;
+      drawWheel();
+      isSpinning = false;
+      spinBtn.disabled = false;
+
+      // Calculate winner: pointer is at top (angle -PI/2 or 3PI/2)
+      const normalized = ((currentRotation % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
+      const arc = (2 * Math.PI) / numSegments;
+      // The segment under the pointer (top)
+      let index = Math.floor((Math.PI / 2 - normalized + 2 * Math.PI) / arc) % numSegments;
+      index = (index + numSegments) % numSegments;
+
+      const winner = list[index];
+      resultDiv.style.display = 'block';
+      resultDiv.innerHTML = `🎉 The wheel landed on:<br><strong>${winner}</strong>`;
+    }
+  }
+  requestAnimationFrame(animate);
+}
+
+categorySelect.addEventListener('change', () => {
+  currentRotation = 0;
+  drawWheel();
+  resultDiv.style.display = 'none';
+});
+
+spinBtn.addEventListener('click', spin);
+drawWheel();
+</script>
+</body>
+</html>
