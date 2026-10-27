@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CNMI 2026 Election Spin the Wheel - Kagman</title>
+<title>CNMI 2026 Election Spin the Wheel</title>
 <style>
   * { box-sizing: border-box; }
   body {
@@ -18,32 +18,31 @@
   h1 { 
     text-shadow: 2px 2px 6px rgba(0,0,0,0.6); 
     margin: 10px 0 5px; 
-    font-size: clamp(1.6rem, 5vw, 2.4rem);
+    font-size: clamp(1.5rem, 5vw, 2.3rem);
   }
   .subtitle { font-size: 1.05em; margin-bottom: 15px; opacity: 0.95; }
   .controls { margin: 15px 0; }
   select, button {
-    padding: 12px 18px;
-    font-size: 16px;
-    margin: 6px;
+    padding: 12px 16px;
+    font-size: 15px;
+    margin: 5px;
     border: none;
     border-radius: 10px;
     cursor: pointer;
   }
-  select { background: white; color: #222; min-width: 220px; }
+  select { background: white; color: #222; min-width: 240px; max-width: 90vw; }
   button {
     background: #ff4757;
     color: white;
     font-weight: bold;
     box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-    transition: all 0.2s;
   }
-  button:hover { background: #ee5a52; transform: translateY(-1px); }
-  button:disabled { background: #888; cursor: not-allowed; transform: none; }
+  button:hover { background: #ee5a52; }
+  button:disabled { background: #888; cursor: not-allowed; }
   #wheel-container {
     position: relative;
-    width: min(420px, 92vw);
-    height: min(420px, 92vw);
+    width: min(440px, 94vw);
+    height: min(440px, 94vw);
     margin: 20px auto;
   }
   canvas {
@@ -66,56 +65,54 @@
     z-index: 10;
   }
   #result {
-    font-size: 1.35em;
+    font-size: 1.3em;
     font-weight: bold;
-    margin-top: 18px;
+    margin-top: 16px;
     min-height: 70px;
     padding: 16px;
     background: rgba(0,0,0,0.45);
     border-radius: 12px;
     display: none;
-    max-width: 600px;
+    max-width: 650px;
     margin-left: auto;
     margin-right: auto;
   }
   .legend { 
-    margin-top: 18px; 
+    margin-top: 16px; 
     font-size: 0.85em; 
     opacity: 0.85; 
-    max-width: 600px;
+    max-width: 650px;
     margin-left: auto;
     margin-right: auto;
   }
-  .source { font-size: 0.75em; opacity: 0.7; margin-top: 8px; }
 </style>
 </head>
 <body>
   <h1>🗳️ CNMI 2026 Election Spin the Wheel</h1>
-  <div class="subtitle">For Kagman residents — November 3, 2026 General Election</div>
+  <div class="subtitle">November 3, 2026 General Election — Whole Commonwealth</div>
   <div class="controls">
     <select id="category">
-      <option value="all">All Candidates (random)</option>
-      <option value="governor">Governor / Lt. Governor Tickets</option>
+      <option value="all">All Candidates</option>
+      <option value="governor">Governor / Lt. Governor</option>
       <option value="delegate">Delegate to U.S. House</option>
       <option value="ag">Attorney General</option>
-      <option value="senate">Senate (Saipan – 3rd District)</option>
-      <option value="house">House District 5 (Kagman)</option>
-      <option value="mayor">Saipan Mayor</option>
-      <option value="council">Saipan Municipal Council</option>
-      <option value="boe">Board of Education (Saipan)</option>
+      <option value="senate">Senate (All Districts)</option>
+      <option value="house">House of Representatives (All)</option>
+      <option value="mayor">Mayors (All)</option>
+      <option value="council">Municipal Council (All)</option>
+      <option value="boe">Board of Education</option>
     </select>
     <button id="spinBtn">SPIN!</button>
   </div>
   <div id="wheel-container">
     <div id="pointer"></div>
-    <canvas id="wheel" width="500" height="500"></canvas>
+    <canvas id="wheel" width="520" height="520"></canvas>
   </div>
   <div id="result"></div>
   <div class="legend">
-    Based on official CEC certified candidates (votecnmi.gov.mp).<br>
+    Based on official CEC certified candidates.<br>
     Spin for fun — not official advice or endorsement!
   </div>
-  <div class="source">Source: Commonwealth Election Commission 2026 Certified Candidates List</div>
 
 <script>
 const candidates = {
@@ -134,35 +131,102 @@ const candidates = {
     "Michael Norita Evangelista"
   ],
   senate: [
+    // Saipan (3rd)
     "Celina Roberto Babauta (DEM)",
     "Corina Lorraine Magofna (IND)",
     "Vicente Castro Camacho (IND)",
     "Marco Taisakan Peter (REP)",
     "Vinnie Vinson Flores Sablan (REP)",
     "Crispin Manglona Sablan (IND)",
-    "Edwin Raymond Borja Quitugua (IND)"
+    "Edwin Raymond Borja Quitugua (IND)",
+    // Rota (1st)
+    "Robert Jr Harrison Myers (IND)",
+    "Tito Songao Hocog II (REP)",
+    "Donald Manalang Manglona (IND)",
+    // Tinian (2nd)
+    "Francisco Quichuchu Cruz (REP)",
+    "Jude Untalan Hofschneider (REP)"
   ],
   house: [
+    // District 5 (Kagman) kept for completeness
     "Ted Anthony Deleon Guerrero (REP)",
     "Angelo Atalig Camacho (IND)",
     "Peter Francis Reyes Muna (DEM)",
-    "Leila Haveia Fleming Clark Staffler (DEM)"
+    "Leila Haveia Fleming Clark Staffler (DEM)",
+    // District 1
+    "Janet Ulloa Maratita (IND)",
+    "Raymond Ulloa Palacios (IND)",
+    "Joseph Arriola Flores (IND)",
+    "Diego Vincent Fejeran Camacho (IND)",
+    "John Deleon Guerrero Demapan Jr. (REP)",
+    "Roy Christopher Aldan Ada (REP)",
+    "Cecilia Remedio Taitano Fitial (REP)",
+    "Patrick Matagolai Cepeda (REP)",
+    "Benusto Piteg (REP)",
+    "Alfredo Javier Cabael (REP)",
+    "Roman Cepeda Benavente (IND)",
+    "Vincent Raymond Seman Aldan (IND)",
+    "Ricardo Castro Cruz Jr. (DEM)",
+    // District 2
+    "John Paul Palacios Sablan (IND)",
+    "Daniel Jr Iwashita Aquino (IND)",
+    "Keith Cabrera Ada (REP)",
+    // District 3
+    "Ralph Naraja Yumul (IND)",
+    "Marissa Renee Flores (IND)",
+    "Steve Kap Soo Jang (IND)",
+    "Elias Jerome Malite Rangamar (IND)",
+    "Del Ariel Benson (REP)",
+    "Edward C Arriola Jr. (REP)",
+    "Quaid Taima Ogumoro Ngirchongor (REP)",
+    "Andrew Lujan Orsini (REP)",
+    "Yvette Reyes Sablan (REP)",
+    "Carlos Ebert Santos (IND)",
+    "Gabriel Boki Babauta (DEM)",
+    "Denita Kaipat Yangetmai (DEM)",
+    // District 4
+    "Joel Castro Camacho (IND)",
+    "James Kennedy Weilbacher DLG Benjamin (REP)",
+    "Malcolm Jason Omar (REP)",
+    // District 6
+    "Joseph Romaldo Evangelista Santos (REP)",
+    // District 7
+    "Julie Marie Atalig Ogo (IND)"
   ],
   mayor: [
-    "Ramon “RB” Camacho (IND)",
-    "Joseph Muna Mendiola (IND)"
+    "Ramon “RB” Camacho (IND) - Saipan",
+    "Joseph Muna Mendiola (IND) - Saipan",
+    "Aubry Manglona Hocog (REP) - Rota",
+    "Antonio San Nicolas Borja (REP) - Tinian",
+    "Keli Aiken Tenorio (REP) - Northern Islands",
+    "Valentino Nicky Taisacan Jr. (IND) - Northern Islands"
   ],
   council: [
+    // Saipan
     "Anthony Tenorio Benavente",
     "Antonia Manibusan Tudela",
-    "Marian Deleon Guerrero Tudela"
+    "Marian Deleon Guerrero Tudela",
+    // Rota
+    "Sandra Mesngon Masga",
+    "Tillie Castro Taimanao",
+    "Jonovan Hocog Lizama",
+    // Tinian
+    "Chad Ellie Palacios",
+    "Wally Flores Villagomez",
+    "Ana Marie Cruz San Nicolas"
   ],
-  boe: ["Daniel Ogo Quitugua"]
+  boe: ["Daniel Ogo Quitugua (Saipan)"]
 };
+
 candidates.all = [
-  ...candidates.governor, ...candidates.delegate, ...candidates.ag,
-  ...candidates.senate, ...candidates.house, ...candidates.mayor,
-  ...candidates.council, ...candidates.boe
+  ...candidates.governor,
+  ...candidates.delegate,
+  ...candidates.ag,
+  ...candidates.senate,
+  ...candidates.house,
+  ...candidates.mayor,
+  ...candidates.council,
+  ...candidates.boe
 ];
 
 const canvas = document.getElementById('wheel');
@@ -178,7 +242,8 @@ const colors = [
   '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7',
   '#DDA0DD', '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E9',
   '#F1948A', '#82E0AA', '#F8C471', '#AED6F1', '#D7BDE2',
-  '#F5B7B1', '#A9DFBF', '#FAD7A0', '#D4E6F1', '#E8DAEF'
+  '#F5B7B1', '#A9DFBF', '#FAD7A0', '#D4E6F1', '#E8DAEF',
+  '#F9E79F', '#D5F5E3', '#FADBD8', '#D6EAF8'
 ];
 
 function getCurrentList() {
@@ -205,45 +270,35 @@ function drawWheel() {
     ctx.closePath();
     ctx.fill();
 
-    // Text
     ctx.save();
     ctx.rotate(startAngle + arc / 2);
     ctx.textAlign = "right";
     ctx.fillStyle = "#111";
-    const fontSize = Math.max(11, Math.min(16, 200 / numSegments));
+    const fontSize = Math.max(9, Math.min(14, 180 / numSegments));
     ctx.font = `bold ${fontSize}px sans-serif`;
     let text = list[i];
-    if (text.length > 26) text = text.substring(0, 23) + "…";
-    ctx.fillText(text, radius - 22, 5);
+    if (text.length > 28) text = text.substring(0, 25) + "…";
+    ctx.fillText(text, radius - 16, 4);
     ctx.restore();
   }
 
-  // Center circle
   ctx.beginPath();
-  ctx.arc(0, 0, 36, 0, 2 * Math.PI);
+  ctx.arc(0, 0, 34, 0, 2 * Math.PI);
   ctx.fillStyle = "#fff";
   ctx.fill();
   ctx.strokeStyle = "#222";
-  ctx.lineWidth = 5;
+  ctx.lineWidth = 4;
   ctx.stroke();
 
   ctx.restore();
 }
 
-// Accurate winner detection: which segment is under the top pointer
 function getWinnerIndex(rotation, numSegments) {
   const arc = (2 * Math.PI) / numSegments;
-  // Normalize rotation to [0, 2π)
   let r = ((rotation % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
-
-  // Original angle that is currently under the pointer (top = -π/2)
-  // Because positive rotate is clockwise
   let originalAngle = (-Math.PI / 2 - r + 4 * Math.PI) % (2 * Math.PI);
-
-  // Segment i starts at i*arc - π/2
   let relative = (originalAngle - (-Math.PI / 2) + 2 * Math.PI) % (2 * Math.PI);
-  let index = Math.floor(relative / arc) % numSegments;
-  return index;
+  return Math.floor(relative / arc) % numSegments;
 }
 
 function spin() {
