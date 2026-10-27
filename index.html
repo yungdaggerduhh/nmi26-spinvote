@@ -30,7 +30,7 @@
     border-radius: 10px;
     cursor: pointer;
   }
-  select { background: white; color: #222; min-width: 240px; max-width: 90vw; }
+  select { background: white; color: #222; min-width: 260px; max-width: 92vw; }
   button {
     background: #ff4757;
     color: white;
@@ -89,18 +89,30 @@
 </head>
 <body>
   <h1>🗳️ CNMI 2026 Election Spin the Wheel</h1>
-  <div class="subtitle">November 3, 2026 General Election — Whole Commonwealth</div>
+  <div class="subtitle">November 3, 2026 — Pick your district / race</div>
   <div class="controls">
     <select id="category">
-      <option value="all">All Candidates</option>
       <option value="governor">Governor / Lt. Governor</option>
       <option value="delegate">Delegate to U.S. House</option>
       <option value="ag">Attorney General</option>
-      <option value="senate">Senate (All Districts)</option>
-      <option value="house">House of Representatives (All)</option>
-      <option value="mayor">Mayors (All)</option>
-      <option value="council">Municipal Council (All)</option>
-      <option value="boe">Board of Education</option>
+      <option value="senate_saipan">Senate — Saipan (3rd District)</option>
+      <option value="senate_rota">Senate — Rota (1st District)</option>
+      <option value="senate_tinian">Senate — Tinian (2nd District)</option>
+      <option value="house1">House District 1</option>
+      <option value="house2">House District 2</option>
+      <option value="house3">House District 3</option>
+      <option value="house4">House District 4</option>
+      <option value="house5">House District 5</option>
+      <option value="house6">House District 6 (Tinian)</option>
+      <option value="house7">House District 7 (Rota)</option>
+      <option value="mayor_saipan">Mayor — Saipan</option>
+      <option value="mayor_rota">Mayor — Rota</option>
+      <option value="mayor_tinian">Mayor — Tinian</option>
+      <option value="mayor_ni">Mayor — Northern Islands</option>
+      <option value="council_saipan">Municipal Council — Saipan</option>
+      <option value="council_rota">Municipal Council — Rota</option>
+      <option value="council_tinian">Municipal Council — Tinian</option>
+      <option value="boe">Board of Education (Saipan)</option>
     </select>
     <button id="spinBtn">SPIN!</button>
   </div>
@@ -111,7 +123,7 @@
   <div id="result"></div>
   <div class="legend">
     Based on official CEC certified candidates.<br>
-    Spin for fun — not official advice or endorsement!
+    Only spin the races you can vote for in your district. Just for fun!
   </div>
 
 <script>
@@ -130,30 +142,25 @@ const candidates = {
     "Jonathan Robert Glass",
     "Michael Norita Evangelista"
   ],
-  senate: [
-    // Saipan (3rd)
+  senate_saipan: [
     "Celina Roberto Babauta (DEM)",
     "Corina Lorraine Magofna (IND)",
     "Vicente Castro Camacho (IND)",
     "Marco Taisakan Peter (REP)",
     "Vinnie Vinson Flores Sablan (REP)",
     "Crispin Manglona Sablan (IND)",
-    "Edwin Raymond Borja Quitugua (IND)",
-    // Rota (1st)
+    "Edwin Raymond Borja Quitugua (IND)"
+  ],
+  senate_rota: [
     "Robert Jr Harrison Myers (IND)",
     "Tito Songao Hocog II (REP)",
-    "Donald Manalang Manglona (IND)",
-    // Tinian (2nd)
+    "Donald Manalang Manglona (IND)"
+  ],
+  senate_tinian: [
     "Francisco Quichuchu Cruz (REP)",
     "Jude Untalan Hofschneider (REP)"
   ],
-  house: [
-    // District 5 (Kagman) kept for completeness
-    "Ted Anthony Deleon Guerrero (REP)",
-    "Angelo Atalig Camacho (IND)",
-    "Peter Francis Reyes Muna (DEM)",
-    "Leila Haveia Fleming Clark Staffler (DEM)",
-    // District 1
+  house1: [
     "Janet Ulloa Maratita (IND)",
     "Raymond Ulloa Palacios (IND)",
     "Joseph Arriola Flores (IND)",
@@ -166,12 +173,14 @@ const candidates = {
     "Alfredo Javier Cabael (REP)",
     "Roman Cepeda Benavente (IND)",
     "Vincent Raymond Seman Aldan (IND)",
-    "Ricardo Castro Cruz Jr. (DEM)",
-    // District 2
+    "Ricardo Castro Cruz Jr. (DEM)"
+  ],
+  house2: [
     "John Paul Palacios Sablan (IND)",
     "Daniel Jr Iwashita Aquino (IND)",
-    "Keith Cabrera Ada (REP)",
-    // District 3
+    "Keith Cabrera Ada (REP)"
+  ],
+  house3: [
     "Ralph Naraja Yumul (IND)",
     "Marissa Renee Flores (IND)",
     "Steve Kap Soo Jang (IND)",
@@ -183,51 +192,56 @@ const candidates = {
     "Yvette Reyes Sablan (REP)",
     "Carlos Ebert Santos (IND)",
     "Gabriel Boki Babauta (DEM)",
-    "Denita Kaipat Yangetmai (DEM)",
-    // District 4
+    "Denita Kaipat Yangetmai (DEM)"
+  ],
+  house4: [
     "Joel Castro Camacho (IND)",
     "James Kennedy Weilbacher DLG Benjamin (REP)",
-    "Malcolm Jason Omar (REP)",
-    // District 6
-    "Joseph Romaldo Evangelista Santos (REP)",
-    // District 7
+    "Malcolm Jason Omar (REP)"
+  ],
+  house5: [
+    "Ted Anthony Deleon Guerrero (REP)",
+    "Angelo Atalig Camacho (IND)",
+    "Peter Francis Reyes Muna (DEM)",
+    "Leila Haveia Fleming Clark Staffler (DEM)"
+  ],
+  house6: [
+    "Joseph Romaldo Evangelista Santos (REP)"
+  ],
+  house7: [
     "Julie Marie Atalig Ogo (IND)"
   ],
-  mayor: [
-    "Ramon “RB” Camacho (IND) - Saipan",
-    "Joseph Muna Mendiola (IND) - Saipan",
-    "Aubry Manglona Hocog (REP) - Rota",
-    "Antonio San Nicolas Borja (REP) - Tinian",
-    "Keli Aiken Tenorio (REP) - Northern Islands",
-    "Valentino Nicky Taisacan Jr. (IND) - Northern Islands"
+  mayor_saipan: [
+    "Ramon “RB” Camacho (IND)",
+    "Joseph Muna Mendiola (IND)"
   ],
-  council: [
-    // Saipan
+  mayor_rota: [
+    "Aubry Manglona Hocog (REP)"
+  ],
+  mayor_tinian: [
+    "Antonio San Nicolas Borja (REP)"
+  ],
+  mayor_ni: [
+    "Keli Aiken Tenorio (REP)",
+    "Valentino Nicky Taisacan Jr. (IND)"
+  ],
+  council_saipan: [
     "Anthony Tenorio Benavente",
     "Antonia Manibusan Tudela",
-    "Marian Deleon Guerrero Tudela",
-    // Rota
+    "Marian Deleon Guerrero Tudela"
+  ],
+  council_rota: [
     "Sandra Mesngon Masga",
     "Tillie Castro Taimanao",
-    "Jonovan Hocog Lizama",
-    // Tinian
+    "Jonovan Hocog Lizama"
+  ],
+  council_tinian: [
     "Chad Ellie Palacios",
     "Wally Flores Villagomez",
     "Ana Marie Cruz San Nicolas"
   ],
-  boe: ["Daniel Ogo Quitugua (Saipan)"]
+  boe: ["Daniel Ogo Quitugua"]
 };
-
-candidates.all = [
-  ...candidates.governor,
-  ...candidates.delegate,
-  ...candidates.ag,
-  ...candidates.senate,
-  ...candidates.house,
-  ...candidates.mayor,
-  ...candidates.council,
-  ...candidates.boe
-];
 
 const canvas = document.getElementById('wheel');
 const ctx = canvas.getContext('2d');
@@ -242,17 +256,16 @@ const colors = [
   '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7',
   '#DDA0DD', '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E9',
   '#F1948A', '#82E0AA', '#F8C471', '#AED6F1', '#D7BDE2',
-  '#F5B7B1', '#A9DFBF', '#FAD7A0', '#D4E6F1', '#E8DAEF',
-  '#F9E79F', '#D5F5E3', '#FADBD8', '#D6EAF8'
+  '#F5B7B1', '#A9DFBF', '#FAD7A0', '#D4E6F1', '#E8DAEF'
 ];
 
 function getCurrentList() {
-  return candidates[categorySelect.value] || candidates.all;
+  return candidates[categorySelect.value] || candidates.governor;
 }
 
 function drawWheel() {
   const list = getCurrentList();
-  const numSegments = list.length;
+  const numSegments = Math.max(list.length, 1);
   const arc = (2 * Math.PI) / numSegments;
   const radius = canvas.width / 2;
 
@@ -274,11 +287,11 @@ function drawWheel() {
     ctx.rotate(startAngle + arc / 2);
     ctx.textAlign = "right";
     ctx.fillStyle = "#111";
-    const fontSize = Math.max(9, Math.min(14, 180 / numSegments));
+    const fontSize = Math.max(10, Math.min(15, 190 / numSegments));
     ctx.font = `bold ${fontSize}px sans-serif`;
-    let text = list[i];
-    if (text.length > 28) text = text.substring(0, 25) + "…";
-    ctx.fillText(text, radius - 16, 4);
+    let text = list[i] || "";
+    if (text.length > 26) text = text.substring(0, 23) + "…";
+    ctx.fillText(text, radius - 18, 4);
     ctx.restore();
   }
 
@@ -303,11 +316,13 @@ function getWinnerIndex(rotation, numSegments) {
 
 function spin() {
   if (isSpinning) return;
+  const list = getCurrentList();
+  if (list.length === 0) return;
+
   isSpinning = true;
   spinBtn.disabled = true;
   resultDiv.style.display = 'none';
 
-  const list = getCurrentList();
   const numSegments = list.length;
   const spins = 6 + Math.random() * 4;
   const extra = Math.random() * 2 * Math.PI;
